@@ -1,5 +1,5 @@
 # SDTFE
-This code computes the surface density field from a particle set using the DTFE method described in, Parallel DTFE Surface Density Field Reconstruction.  
+This code computes the surface density field from a particle set using the DTFE method described in the paper, Parallel DTFE Surface Density Field Reconstruction.  
 
 ## Getting Started
 
@@ -35,7 +35,7 @@ Download SDTFE.
 git clone git@github.com:steverangel/SDTFE.git
 ```
 
-Edit Makefile for SDTFE for linking to Qhull and libtiff
+Edit the Makefile for SDTFE for linking to Qhull and libtiff.
 
 ```
 QHULLLIBDIR = ../qhull/lib 
@@ -45,7 +45,7 @@ TIFFLIBDIR = ../tiff-4.0.9/install/lib
 TIFFINCDIR = -I../tiff-4.0.9/libtiff
 ```
 
-Compile SDTFE using Makefile.
+Compile SDTFE using make.
 
 ```
 make
@@ -55,19 +55,10 @@ make
 
 Explain how to run the automated tests for this system
 
-## Contributing
-
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
 
 ## Authors
 
-* **Esteban Rangel** - *Parallel DTFE Surface Density Field Reconstruction* - [PurpleBooth](http://ieeexplore.ieee.org/document/7776476/)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+* **Esteban Rangel** - *Parallel DTFE Surface Density Field Reconstruction* - [paper](http://ieeexplore.ieee.org/document/7776476/)
 
 ## License
 
@@ -75,6 +66,5 @@ This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md
 
 ## Acknowledgments
 
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
+* The Delaunay Tessellation Field Estimator - [paper](https://arxiv.org/pdf/astro-ph/0011007.pdf)
+* Fast Ray–Tetrahedron Intersection using Plücker Coordinates - [paper](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.565.3129&rep=rep1&type=pdf)
