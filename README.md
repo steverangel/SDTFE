@@ -1,5 +1,5 @@
 # SDTFE
-This code implements the method for computing a surface density field from particle data described in the paper, Parallel DTFE Surface Density Field Reconstruction, see author section for details. It was developed for computing gravitational lensing effects using the flat-sky approximation from N-body cosmological simulations.  
+This code implements the method for computing a surface density field from particle data, as described in the paper: Parallel DTFE Surface Density Field Reconstruction, see author section for details. It was developed for computing gravitational lensing effects using the flat-sky approximation from N-body cosmological simulations.  
 
 ## Getting Started
 
@@ -7,9 +7,9 @@ These instructions will get a copy of the project up and running on your local m
 
 ### Prerequisites
 
-This software uses Qhull for the Delaunay triangulation library. [Qhull](http://www.qhull.org)
+This software uses [Qhull](http://www.qhull.org) for the Delaunay triangulation library. 
 
-Optional, but recomended, is libtiff for visualization of the resulting field. [libtiff](http://www.libtiff.org)
+Optional, but recomended, is [libtiff](http://www.libtiff.org) for visualization of the resulting field. 
 
 ### Installing
 
@@ -37,7 +37,7 @@ Download SDTFE.
 git clone git@github.com:steverangel/SDTFE.git
 ```
 
-Edit the Makefile for SDTFE for linking to Qhull and libtiff.
+Edit the SDTFE Makefile to link Qhull and libtiff.
 
 ```
 QHULLLIBDIR = ../qhull/lib 
@@ -55,20 +55,22 @@ make
 
 ## Running the examples
 
-Download and extract example data
+Download and extract example data.
 
 ```
 curl -O http://users.eecs.northwestern.edu/~emr126/sdtfe_examples.tar.gz
 tar xvfz sdtfe_examples.tar.gz
 ```
 
-Run the examples with all the parameters
+Run the examples with all the parameters.
+
+Usage: dtfe [ path\_to\_file n\_particles grid\_dim center\_x center\_y center\_z field\_width field\_depth particle\_mass mc\_box\_width n\_mc\_samples sample\_factor ]
 
 ```
 ./bin/dtfe ../data/913571938961.bin 216683 768 2556.9 1510.4 1986.6 6.0 4.0 1 0.01 5 0.25
 ```
 
-or by prompts
+Or by terminal prompts.
 
 ```
 ./bin/dtfe
@@ -76,13 +78,13 @@ or by prompts
 
 ## Authors
 
-* **Esteban Rangel** - *Parallel DTFE Surface Density Field Reconstruction* - [paper](http://ieeexplore.ieee.org/document/7776476/)
+* **Esteban Rangel** - *Parallel DTFE Surface Density Field Reconstruction* - [pdf](http://cucis.ece.northwestern.edu/publications/pdf/RLH16.pdf)
 
 ## License
 
-This project is licensed under the GNU License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the GNU License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
-* The Delaunay Tessellation Field Estimator - [paper](https://arxiv.org/pdf/astro-ph/0011007.pdf)
-* Fast Ray–Tetrahedron Intersection using Plücker Coordinates - [paper](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.565.3129&rep=rep1&type=pdf)
+* The Delaunay Tessellation Field Estimator - [pdf](https://arxiv.org/pdf/astro-ph/0011007.pdf)
+* Fast Ray–Tetrahedron Intersection using Plücker Coordinates - [pdf](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.565.3129&rep=rep1&type=pdf)
