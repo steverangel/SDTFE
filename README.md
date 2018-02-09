@@ -25,6 +25,8 @@ Download and install libtiff.
 
 ```
 curl -O http://download.osgeo.org/libtiff/tiff-4.0.9.tar.gz
+tar xvfz tiff-4.0.9.tar.gz
+cd tiff-4.0.9/
 ./configure
 make
 ```
@@ -53,7 +55,24 @@ make
 
 ## Running the examples
 
-Comming...
+Download and extract example data
+
+```
+curl -O http://users.eecs.northwestern.edu/~emr126/sdtfe_examples.tar.gz
+tar xvfz sdtfe_examples.tar.gz
+```
+
+Run the examples with all the parameters
+
+```
+./bin/dtfe ../data/913571938961.bin 216683 768 2556.9 1510.4 1986.6 6.0 4.0 1 0.01 5 0.25
+```
+
+or by prompts
+
+```
+./bin/dtfe
+```
 
 ## Authors
 
