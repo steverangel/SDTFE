@@ -3,13 +3,13 @@ This code computes the surface density field from a particle set using the DTFE 
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
 This software uses Qhull for the Delaunay triangulation library. http://www.qhull.org
 
-Optionally, but recomended, is libtiff for visualization of the resulting field. http://www.libtiff.org
+Optional, but recomended, is libtiff for visualization of the resulting field. http://www.libtiff.org
 
 ### Installing
 
@@ -53,8 +53,7 @@ make
 
 ## Running the examples
 
-Explain how to run the automated tests for this system
-
+Comming...
 
 ## Authors
 
@@ -62,7 +61,7 @@ Explain how to run the automated tests for this system
 
 ## License
 
-This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 
