@@ -40,11 +40,15 @@ git clone git@github.com:steverangel/SDTFE.git
 Edit the SDTFE Makefile to link Qhull and libtiff.
 
 ```
+cd SDTFE
+vim Makefile
+...
 QHULLLIBDIR = ../qhull/lib 
 QHULLINCDIR = -I../qhull/src/libqhull
-...
+
 TIFFLIBDIR = ../tiff-4.0.9/install/lib
 TIFFINCDIR = -I../tiff-4.0.9/libtiff
+...
 ```
 
 Compile SDTFE using make.
