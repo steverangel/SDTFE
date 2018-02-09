@@ -39,7 +39,7 @@ int main( int argc, char *argv[] ) {
 
     char filename[512];
     if (argc<2) {
-      printf("Usage: dtfe [ path_to_file n_particles grid_dim center_x center_y center_z field_width field_depth particle_mass]\n");
+      printf("Usage: dtfe [ path_to_file n_particles grid_dim center_x center_y center_z field_width field_depth particle_mass mc_box_width n_mc_samples sample_factor ]\n");
       printf("Enter the file location):\n");
       scanf("%s",filename);
     }
