@@ -1,15 +1,15 @@
 # SDTFE
-This code computes the surface density field from a particle set using the DTFE method described in the paper, Parallel DTFE Surface Density Field Reconstruction.  
+This code implements the method for computing a surface density field from particle data described in the paper, Parallel DTFE Surface Density Field Reconstruction, see author section for details. It was developed for computing gravitational lensing effects using the flat-sky approximation from N-body cosmological simulations.  
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
+These instructions will get a copy of the project up and running on your local machine for development and testing purposes. Tested on macOSX 10.13.3 High Sierra. 
 
 ### Prerequisites
 
-This software uses Qhull for the Delaunay triangulation library. http://www.qhull.org
+This software uses Qhull for the Delaunay triangulation library. [Qhull](http://www.qhull.org)
 
-Optional, but recomended, is libtiff for visualization of the resulting field. http://www.libtiff.org
+Optional, but recomended, is libtiff for visualization of the resulting field. [libtiff](http://www.libtiff.org)
 
 ### Installing
 
