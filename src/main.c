@@ -13,7 +13,7 @@
 #include <math.h>
 #include <stdint.h>
 
-#include "sample.h"
+#include "utils.h"
 #include "triangulate.h"
 #include "dtfe.h"
 
@@ -24,6 +24,15 @@ char *basename(char const *path)
         return strdup(path);
     else
         return strdup(s + 1);
+}
+
+// time of day difference - timer for code performance evaluation
+static inline long long int toddiff( struct timeval *tod1, struct timeval *tod2 )
+{
+    long long t1, t2;
+    t1 = tod1->tv_sec * 1000000 + tod1->tv_usec;
+    t2 = tod2->tv_sec * 1000000 + tod2->tv_usec;
+    return t1 - t2;
 }
 
 int main( int argc, char *argv[] ) {
@@ -37,10 +46,10 @@ int main( int argc, char *argv[] ) {
     else
       strcpy(filename,argv[1]);
 
-    int n_particles;
+    size_t n_particles;
     if (argc<3) {
       printf("Enter the number of particles in the file:\n");
-      scanf("%d",&n_particles);
+      scanf("%ld",&n_particles);
     }
     else
       n_particles = atoi(argv[2]);
@@ -104,57 +113,74 @@ int main( int argc, char *argv[] ) {
     else
       n_mc_samples = atoi(argv[11]);
 
-    srand(time(NULL));
-    /* 
-     * In this example the input file is a binary (row-major) single precision array of positions
-     * in Cartesian space. Qhull and this code compute in double precision and conversion is needed.
+    float sample_factor;
+    if (argc<13) {
+      printf("Enter the subsample factor:\n");
+      scanf("%f", &sample_factor);
+    }
+    else
+      sample_factor = atof(argv[12]);
+
+    // set a random seed
+    unsigned int seed = time(NULL);
+    srand(seed);
+    printf("Using prng seed: %d\n",seed);
+
+    // recompute the particle mass
+    pM = pM/sample_factor;
+
+    /* ** Read Input Data ** 
+     * In this example the input file is a binary (row-major) single precision array of positions,
+     * in 3D Cartesian space. Input file is using row major addressing.
      * */
-
-    // Note: The format for qhull, however the 4th location is reused for on-site density estimate.
-
-    float *buff = (float*)malloc(n_particles*sizeof(float)*3);
-    
+    float *buff = (float*)malloc(n_particles*sizeof(float)*3);    
     FILE *ptr_myfile;
     ptr_myfile=fopen(filename,"rb");
     int t=fread(buff,sizeof(float),n_particles*3,ptr_myfile);
     fclose(ptr_myfile);
 
-    double *sample_data = (double*)malloc(n_particles*sizeof(double)*4);
-    // Read into a column-major array.
-    int i;
-    for (i=0;i<n_particles;++i) {
-      sample_data[i*4+0]=(double)buff[0*n_particles+i];
-      sample_data[i*4+1]=(double)buff[1*n_particles+i];
-      sample_data[i*4+2]=(double)buff[2*n_particles+i];
-      sample_data[i*4+3]=0.0;
-    }
-    free( buff );
+    printf("Converting to Qhull format...\n");
+    // Note: The returned pointer must be passed to free to avoid a memory leak.
+    double *particle_data = convert_to_qhdata(buff, n_particles);
 
-    // Note: allocated by the "triangulate" function as 
-    // ( A, B, C, D, neighbor_ba, neighbor_ac, neighbor_dc, neighbor_bd )
-    int *tetra_data;
-    int num_tetra;
+    printf("Shuffling the data...\n");
+    // shuffle the particles in the data for a random sample w/o replacement
+    size_t n_shuffle = n_particles*sample_factor;
+    shuffle_buff( &particle_data, n_particles, n_shuffle);
+
+    // random rotation of the particle set
+    double theta[3];
+    theta[0]=(double)rand()/RAND_MAX*2.0*M_PI;
+    theta[1]=(double)rand()/RAND_MAX*2.0*M_PI;
+    theta[2]=(double)rand()/RAND_MAX*2.0*M_PI;
+    printf("Rotating with theta=[%lf %lf %lf]...\n",theta[0],theta[1],theta[2]);
+    rotate3d(&particle_data, n_shuffle, theta, field_vol_center);
 
     printf("Creating Delaunay triangulation...\n");
-    num_tetra = triangulate( sample_data, n_particles, &tetra_data, "qhull d Qz Qt Qbb" );
-    printf("Done creating %d tetrahedra.\n", num_tetra);
-
+    // Note: The returned pointer must be passed to free to avoid a memory leak.
+    // row major array as: (A, B, C, D, neighbor_ba, neighbor_ac, neighbor_dc, neighbor_bd)...
+    size_t n_tetra;
+    int *tetra_data = triangulate(particle_data, n_shuffle, &n_tetra, "qhull d Qz Qt Qbb");
+    printf("Done creating %ld tetrahedra.\n", n_tetra);
 
     printf("Creating %dx%d surface density field...\n", grid_dim, grid_dim);
-    printf("Center: %f, %f, %f\n", field_vol_center[0], field_vol_center[1], field_vol_center[2] );
+    printf("Center: %f, %f, %f\n", field_vol_center[0], field_vol_center[1], field_vol_center[2]);
     printf("box_len:%f box_len_z: %f\n", box_len, box_len_z);
 
     // density field is stored in the rho array, must be zero initialized.
+    int i;
     double *rho = (double*)malloc(grid_dim*grid_dim*sizeof(double));
     for (i=0;i<grid_dim*grid_dim;++i)
       rho[i]=0.0;
 
-    compute_density( sample_data, n_particles, tetra_data, num_tetra, grid_dim, \
+    // Note: this function can be called iteratively with new sub-sampled data to smooth noise,
+    // however, requires new triangulation for each iteration. 
+    compute_density(particle_data, n_shuffle, tetra_data, n_tetra, grid_dim, \
         box_len, box_len_z, &rho, pM, field_vol_center[0], field_vol_center[1], field_vol_center[2], \
-        n_mc_samples, mc_box_width );
+        n_mc_samples, mc_box_width);
 
     free( tetra_data );
-    free( sample_data );
+    free( particle_data );
 
     char output[256] = "./";
     strcat(output,basename(filename));

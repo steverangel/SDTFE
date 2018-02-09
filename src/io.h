@@ -32,10 +32,7 @@ typedef struct particle_data {
     float *vz;
 } particle_data;
 
-//void write_image( char *, double *, int );
+void write_image( char *, double *, int );
 int write_rho( char*, double **, int );
-void print_halo_properties( fof_halo_properties *); 
-int read_file( char *, fof_halo_properties *, float **);
-int read_file2( char *, fof_halo_properties *, particle_data *, read_opt, int );
 
 #endif

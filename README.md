@@ -1,6 +1,5 @@
 # SDTFE
-
-One Paragraph of project description goes here
+This code computes the surface density field from a particle set using the DTFE method described in, Parallel DTFE Surface Density Field Reconstruction.  
 
 ## Getting Started
 
@@ -8,59 +7,53 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+This software uses Qhull for the Delaunay triangulation library. http://www.qhull.org
 
-```
-Give examples
-```
+Optionally, but recomended, is libtiff for visualization of the resulting field. http://www.libtiff.org
 
 ### Installing
 
-A step by step series of examples that tell you have to get a development env running
-
-Say what the step will be
+Download and install Qhull.
 
 ```
-Give the example
+git clone git@github.com:qhull/qhull.git
+cd qhull
+make
 ```
 
-And repeat
+Download and install libtiff.
 
 ```
-until finished
+curl -O http://download.osgeo.org/libtiff/tiff-4.0.9.tar.gz
+./configure
+make
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+Download SDTFE.
 
-## Running the tests
+```
+git clone git@github.com:steverangel/SDTFE.git
+```
+
+Edit Makefile for SDTFE for linking to Qhull and libtiff
+
+```
+QHULLLIBDIR = ../qhull/lib 
+QHULLINCDIR = -I../qhull/src/libqhull
+...
+TIFFLIBDIR = ../tiff-4.0.9/install/lib
+TIFFINCDIR = -I../tiff-4.0.9/libtiff
+```
+
+Compile SDTFE using Makefile.
+
+```
+make
+```
+
+## Running the examples
 
 Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-## Deployment
-
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
 
 ## Contributing
 
@@ -72,13 +65,13 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Esteban Rangel** - *Parallel DTFE Surface Density Field Reconstruction* - [PurpleBooth](http://ieeexplore.ieee.org/document/7776476/)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GNU License - see the [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
 
