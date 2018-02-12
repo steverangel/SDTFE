@@ -27,7 +27,8 @@ Download and install libtiff.
 curl -O http://download.osgeo.org/libtiff/tiff-4.0.9.tar.gz
 tar xvfz tiff-4.0.9.tar.gz
 cd tiff-4.0.9/
-./configure
+mkdir install
+./configure --prefix=/your/local/install
 make
 ```
 
