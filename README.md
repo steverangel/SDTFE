@@ -30,6 +30,7 @@ cd tiff-4.0.9/
 mkdir install
 ./configure --prefix=/your/local/install
 make
+make install
 ```
 
 Download SDTFE.
