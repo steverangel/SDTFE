@@ -10,8 +10,9 @@ extern "C" {
 #include "bitmap.h"
 #include "io.h"
 
-void compute_density( double *, int, int *, int, int, double, double, double **, float, double, double, double, \
-  const int, const double ); 
+void compute_density(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
+  double box_len, double box_len_z, double *rho, float p_mass, double center_x, double center_y, double center_z, \
+  const int n_mc_samp, const double delta_sample);
 #endif
 
 #ifdef __cplusplus
