@@ -1,15 +1,22 @@
 cmake_minimum_required(VERSION 3.11)
-project(SDTFE LANGUAGES C)
+project(SDTFE LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
+# PIC for everything (could be made target specific)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+# Sanitizer
+# set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+# set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
 
 # Load QHULL
 include(FetchContent)
 FetchContent_Declare(
     qhull
     GIT_REPOSITORY https://github.com/qhull/qhull.git
-    GIT_TAG v8.0.2
+    GIT_TAG 2015.2
 )
 FetchContent_GetProperties(qhull)
 if(NOT qhull_POPULATED)
@@ -30,8 +37,8 @@ if(NOT libtiff_POPULATED)
     add_subdirectory(${libtiff_SOURCE_DIR} ${libtiff_BINARY_DIR})
 endif()
 
-# math
-find_package(m)
+# OpenMP  (if found: OpenMP_FOUND)
+# find_package(OpenMP)
 
 # set sources
 set(sources
@@ -41,9 +48,22 @@ set(sources
     src/io.h src/io.c
     src/triangulate.h src/triangulate.c
     src/utils.c src/utils.h
-    src/main.c
 )
 
-add_executable(dtfe ${sources})
-target_include_directories(dtfe PRIVATE ${qhull_SOURCE_DIR}/src/libqhull)
-target_link_libraries(dtfe PRIVATE qhullstatic tiff ${M_LIBRARIES})
+# library
+add_library(libdtfe STATIC ${sources})
+add_library(dtfe::libdtfe ALIAS libdtfe)
+target_include_directories(libdtfe INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(libdtfe PRIVATE ${qhull_SOURCE_DIR}/src/libqhull)
+target_link_libraries(libdtfe PRIVATE qhullstatic tiff ${M_LIBRARIES})
+if(OpenMP_FOUND)
+    target_link_libraries(libdtfe PRIVATE OpenMP::OpenMP_C)
+endif()
+set_target_properties(libdtfe PROPERTIES OUTPUT_NAME dtfe)
+
+# executable
+add_executable(dtfe src/main.c)
+target_link_libraries(dtfe libdtfe)
+
+# python library
+add_subdirectory(python)

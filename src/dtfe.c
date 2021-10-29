@@ -410,7 +410,7 @@ int pt_loc_2d(int *tri_data, double *particle_data, int *start_tri, double q_x, 
 }
 
 void compute_density(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
-  double box_len, double box_len_z, double **rho, float p_mass, double center_x, double center_y, double center_z, \
+  double box_len, double box_len_z, double *rho, float p_mass, double center_x, double center_y, double center_z, \
   const int n_mc_samp, const double delta_sample) {
 
   // precompute the on-site density values and gradients
@@ -500,10 +500,10 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
         if (n_avg>0) {
           // you can do something more interesting here to filter outliers
           //qsort(rho_tmp,n_mc_samp,sizeof(double),dbl_comp);
-          (*rho)[index+k]+=rho_tmp[n_mc_samp]/n_avg;
+          (rho)[index+k]+=rho_tmp[n_mc_samp]/n_avg;
         }
         else
-          (*rho)[index+k]+=0.0;
+          (rho)[index+k]+=0.0;
       }
     }
   }

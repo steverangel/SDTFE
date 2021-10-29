@@ -4,9 +4,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <getopt.h>
-#if defined(_OPENMP) 
-#include <omp.h>
-#endif
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
@@ -129,11 +126,11 @@ int main( int argc, char *argv[] ) {
     // recompute the particle mass
     pM = pM/sample_factor;
 
-    /* ** Read Input Data ** 
+    /* ** Read Input Data **
      * In this example the input file is a binary (row-major) single precision array of positions,
      * in 3D Cartesian space. Input file is using row major addressing.
      * */
-    float *buff = (float*)malloc(n_particles*sizeof(float)*3);    
+    float *buff = (float*)malloc(n_particles*sizeof(float)*3);
     FILE *ptr_myfile;
     ptr_myfile=fopen(filename,"rb");
     int t=fread(buff,sizeof(float),n_particles*3,ptr_myfile);
@@ -146,7 +143,7 @@ int main( int argc, char *argv[] ) {
     printf("Shuffling the data...\n");
     // shuffle the particles in the data for a random sample w/o replacement
     size_t n_shuffle = n_particles*sample_factor;
-    shuffle_buff( &particle_data, n_particles, n_shuffle);
+    shuffle_buff(particle_data, n_particles, n_shuffle);
 
     // random rotation of the particle set
     double theta[3];
@@ -154,7 +151,7 @@ int main( int argc, char *argv[] ) {
     theta[1]=(double)rand()/RAND_MAX*2.0*M_PI;
     theta[2]=(double)rand()/RAND_MAX*2.0*M_PI;
     printf("Rotating with theta=[%lf %lf %lf]...\n",theta[0],theta[1],theta[2]);
-    rotate3d(&particle_data, n_shuffle, theta, field_vol_center);
+    rotate3d(particle_data, n_shuffle, theta, field_vol_center);
 
     printf("Creating Delaunay triangulation...\n");
     // Note: The returned pointer must be passed to free to avoid a memory leak.
@@ -174,9 +171,9 @@ int main( int argc, char *argv[] ) {
       rho[i]=0.0;
 
     // Note: this function can be called iteratively with new sub-sampled data to smooth noise,
-    // however, requires new triangulation for each iteration. 
+    // however, requires new triangulation for each iteration.
     compute_density(particle_data, n_shuffle, tetra_data, n_tetra, grid_dim, \
-        box_len, box_len_z, &rho, pM, field_vol_center[0], field_vol_center[1], field_vol_center[2], \
+        box_len, box_len_z, rho, pM, field_vol_center[0], field_vol_center[1], field_vol_center[2], \
         n_mc_samples, mc_box_width);
 
     free( tetra_data );
@@ -190,7 +187,9 @@ int main( int argc, char *argv[] ) {
     strcat(image,basename(filename));
     strcat(image,".rho.tiff");
 
-    write_image(image, rho, grid_dim); 
-    write_rho(output, &rho, grid_dim*grid_dim); 
+    write_image(image, rho, grid_dim);
+    write_rho(output, &rho, grid_dim*grid_dim);
+    free(rho);
+    free(buff);
     exit( EXIT_SUCCESS );
 }
