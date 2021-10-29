@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#if defined(_OPENMP) 
+#if defined(_OPENMP)
 #include <omp.h>
 #endif
 #include "constants.h"
@@ -16,16 +16,16 @@ int dbl_comp( const void * a, const void * b ) {
   return ( da > db ) - ( da < db );
 }
 
-inline int Sign(const double x) {
+static inline int Sign(const double x) {
   return ( x > ZERO ? 1 : ( x < -ZERO ? -1 : 0) );
 }
 
-// Permuted inner product 
-inline double vect_plucker_perm_inner_prod2( double *u, double *v ) {
+// Permuted inner product
+static inline double vect_plucker_perm_inner_prod2( double *u, double *v ) {
   return u[2] * v[5] + v[0] * u[3] + v[1] * u[4];
 }
 
-// { CB, AC, BA, DC, BD, DA } 
+// { CB, AC, BA, DC, BD, DA }
 int rayTetraPlucker_full( double plRay2[], double *vert[],
   int *enterFace, int *leaveFace, double enterPoint[], double leavePoint[], int *isSpecialCase ) {
 
@@ -46,25 +46,25 @@ int rayTetraPlucker_full( double plRay2[], double *vert[],
   tmp_pl2[ 5 ] = vert[ B ][ 0 ] * vert[ D ][ 1 ] - vert[ B ][ 1 ] * vert[ D ][ 0 ];
   u[ BD ] = vect_plucker_perm_inner_prod2( plRay2, tmp_pl2 );
   sigma[ BD ] = Sign( u[ BD ] );
-  
+
   tmp_pl2[ 0 ] = vert[ C ][ 0 ] - vert[ D ][ 0 ];
   tmp_pl2[ 1 ] = vert[ C ][ 1 ] - vert[ D ][ 1 ];
   tmp_pl2[ 5 ] = vert[ C ][ 0 ] * vert[ D ][ 1 ] - vert[ C ][ 1 ] * vert[ D ][ 0 ];
   u[ DC ] = vect_plucker_perm_inner_prod2( plRay2, tmp_pl2 );
   sigma[ DC ] = Sign( u[ DC ] );
-  
+
   tmp_pl2[ 0 ] = vert[ C ][ 0 ] - vert[ B ][ 0 ];
   tmp_pl2[ 1 ] = vert[ C ][ 1 ] - vert[ B ][ 1 ];
   tmp_pl2[ 5 ] = vert[ C ][ 0 ] * vert[ B ][ 1 ] - vert[ C ][ 1 ] * vert[ B ][ 0 ];
   u[ CB ] = vect_plucker_perm_inner_prod2( plRay2, tmp_pl2 );
   sigma[ CB ] = Sign( u[ CB ] );
 
-  // { BDC, ACD, ADB, ABC } 
+  // { BDC, ACD, ADB, ABC }
   // { CB, AC, BA, DC, BD, DA }
   // Face BDC
   // edge vectors: CD, BC, DB
   if ( ( sigma[ CB ] != 0 ) || ( sigma[ DC ] != 0 ) || ( sigma[ BD ] != 0 ) ) {
-    invVol = 1.0f / ( -u[ CB ] + u[ DC ] - u[ BD ] ); 
+    invVol = 1.0f / ( -u[ CB ] + u[ DC ] - u[ BD ] );
     if ( ( *enterFace == -1 ) && ( -sigma[ CB ] >= 0 ) && ( sigma[ DC ] >= 0 ) && ( -sigma[ BD ] >= 0 ) ) {
       *enterFace = BDC;
       uEnter1 = -u[ BD ] * invVol;
@@ -107,9 +107,9 @@ int rayTetraPlucker_full( double plRay2[], double *vert[],
   tmp_pl2[ 5 ] = vert[ D ][ 0 ] * vert[ A ][ 1 ] - vert[ D ][ 1 ] * vert[ A ][ 0 ];
   u[ DA ] = vect_plucker_perm_inner_prod2( plRay2, tmp_pl2 );
   sigma[ DA ] = Sign( u[ DA ] );
-  
+
   if ( ( sigma[ AC ] != 0 ) || ( sigma[ DC ] != 0 ) || ( sigma[ DA ] != 0 ) ) {
-    invVol = 1.0f / ( u[ AC ] - u[ DC ] - u[ DA ] ); 
+    invVol = 1.0f / ( u[ AC ] - u[ DC ] - u[ DA ] );
     if ( ( *enterFace == -1 ) && ( sigma[ AC ] >= 0 ) && ( -sigma[ DC ] >= 0 ) && ( -sigma[ DA ] >= 0 ) ) {
       *enterFace = ACD;
       uEnter1 =  u[ AC ] * invVol;
@@ -128,9 +128,9 @@ int rayTetraPlucker_full( double plRay2[], double *vert[],
       *leaveFace = ACD;
       uLeave1 =  u[ AC ] * invVol;
       uLeave2 = -u[ DC ] * invVol;
-      leavePoint[ 0 ] = ( 1 - uLeave1 - uLeave2 ) * vert[ C ][ 0 ] + uLeave1 * vert[ D ][ 0 ] + uLeave2 * vert[ A ][ 0 ]; 
-      leavePoint[ 1 ] = ( 1 - uLeave1 - uLeave2 ) * vert[ C ][ 1 ] + uLeave1 * vert[ D ][ 1 ] + uLeave2 * vert[ A ][ 1 ]; 
-      leavePoint[ 2 ] = ( 1 - uLeave1 - uLeave2 ) * vert[ C ][ 2 ] + uLeave1 * vert[ D ][ 2 ] + uLeave2 * vert[ A ][ 2 ]; 
+      leavePoint[ 0 ] = ( 1 - uLeave1 - uLeave2 ) * vert[ C ][ 0 ] + uLeave1 * vert[ D ][ 0 ] + uLeave2 * vert[ A ][ 0 ];
+      leavePoint[ 1 ] = ( 1 - uLeave1 - uLeave2 ) * vert[ C ][ 1 ] + uLeave1 * vert[ D ][ 1 ] + uLeave2 * vert[ A ][ 1 ];
+      leavePoint[ 2 ] = ( 1 - uLeave1 - uLeave2 ) * vert[ C ][ 2 ] + uLeave1 * vert[ D ][ 2 ] + uLeave2 * vert[ A ][ 2 ];
       if ( ( sigma[ AC ] == 0 ) || ( sigma[ DC ] == 0 ) || ( sigma[ DA ] == 0 ) )
         *isSpecialCase = 1;
       if ( ready == 0 )
@@ -148,7 +148,7 @@ int rayTetraPlucker_full( double plRay2[], double *vert[],
   sigma[ BA ] = Sign( u[ BA ]);
 
   if ( ( sigma[ BA ] != 0 ) || ( sigma[ BD ] != 0 ) || ( sigma[ DA ] != 0 ) ) {
-    invVol = 1.0f / ( u[ DA ] + u[ BD ] - u[ BA ] ); 
+    invVol = 1.0f / ( u[ DA ] + u[ BD ] - u[ BA ] );
     if ( ( *enterFace == -1 ) && ( -sigma[ BA ] >= 0 ) && (sigma[ BD ] >= 0 ) && ( sigma[ DA ] >= 0 ) ) {
       *enterFace = ADB;
       uEnter1 =  u[ BD ] * invVol;
@@ -181,7 +181,7 @@ int rayTetraPlucker_full( double plRay2[], double *vert[],
   // face: ABC
   // edge: CB, AC, BA
   if ( ( sigma[ CB ] != 0 ) || ( sigma[ AC ] != 0 ) || ( sigma[ BA ] != 0 ) ) {
-    invVol = 1.0f / ( u[ BA ] + u[ CB ] - u[ AC ] ); 
+    invVol = 1.0f / ( u[ BA ] + u[ CB ] - u[ AC ] );
     if ( ( *enterFace == -1 ) && ( sigma[ CB ] >= 0 ) && ( -sigma[ AC ] >= 0 ) && ( sigma[ BA ] >= 0 ) ) {
       *enterFace = ABC;
       uEnter1 = -u[ AC ] * invVol;
@@ -214,8 +214,8 @@ int rayTetraPlucker_full( double plRay2[], double *vert[],
   return 0;
 }
 
-// nudge the origin and destination points that define a ray such that it continues to 
-// intersect the tetrahedron it originally intersected. 
+// nudge the origin and destination points that define a ray such that it continues to
+// intersect the tetrahedron it originally intersected.
 static void perturb_ray( double orig[], double dest[], double **vert, double max_dist) {
 
   int i;
@@ -228,12 +228,12 @@ static void perturb_ray( double orig[], double dest[], double **vert, double max
     displacement[ i ] = vert[ r ][ i ] - orig[ i ];
 
   // if the magnitude of the displacement is larger than the maximum distance
-  // scale the displacement vector. 
-  double mag = sqrt( displacement[ 0 ] * displacement[ 0 ] + displacement[ 1 ] * displacement[ 1 ] ); 
+  // scale the displacement vector.
+  double mag = sqrt( displacement[ 0 ] * displacement[ 0 ] + displacement[ 1 ] * displacement[ 1 ] );
   if ( mag > max_dist ) {
     for ( i = 0; i < 2; ++i )
       displacement[ i ] = displacement[ i ] / mag;
-    for ( i = 0; i < 2; ++i ) 
+    for ( i = 0; i < 2; ++i )
       displacement[ i ] = displacement[ i ] * max_dist;
   }
 
@@ -244,7 +244,7 @@ static void perturb_ray( double orig[], double dest[], double **vert, double max
   }
 }
 
-double shoot_3d_ray( int th_idx, int *tetra_data, double *nabla, double *particle_data, double x, double y, 
+double shoot_3d_ray( int th_idx, int *tetra_data, double *nabla, double *particle_data, double x, double y,
     double offset_z, double box_len_z, double delta_xy, int grid_dim, int idx, int *tetra_crossed ){
 
   double rho = 0;
@@ -255,12 +255,12 @@ double shoot_3d_ray( int th_idx, int *tetra_data, double *nabla, double *particl
   int enterFace;
   int leaveFace;
   int is_intersection;
-  int is_special_case; 
+  int is_special_case;
   int perturb_counter;
   double orig[3];
   double dest[3];
   int tmp;
-  int i; 
+  int i;
   double dir[3];
   double plRay[ 6 ];
   plRay[0] = 0.0f;
@@ -279,12 +279,12 @@ double shoot_3d_ray( int th_idx, int *tetra_data, double *nabla, double *particl
 
     assert( th_idx >= -1 );
 
-    orig[ 0 ] = x; 
-    orig[ 1 ] = y; 
+    orig[ 0 ] = x;
+    orig[ 1 ] = y;
     orig[ 2 ] = offset_z;
 
-    dest[ 0 ] = x; 
-    dest[ 1 ] = y; 
+    dest[ 0 ] = x;
+    dest[ 1 ] = y;
     dest[ 2 ] = offset_z + box_len_z;
 
     leaveFace = 0;
@@ -355,7 +355,7 @@ double shoot_3d_ray( int th_idx, int *tetra_data, double *nabla, double *particl
       // check is the box starts (or ends) within the triangulation
       double enter_z = P_enter[ 2 ];
       double leave_z = P_leave[ 2 ];
-      
+
       // the actual interpolation of the point
       double dz = ( leave_z - enter_z );
       double z_interp = dz / 2 + enter_z;
@@ -411,7 +411,7 @@ int pt_loc_2d(int *tri_data, double *particle_data, int *start_tri, double q_x, 
 
 void compute_density(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
   double box_len, double box_len_z, double **rho, float p_mass, double center_x, double center_y, double center_z, \
-  const int n_mc_samp, const double delta_sample) { 
+  const int n_mc_samp, const double delta_sample) {
 
   // precompute the on-site density values and gradients
   pre_compute_vol(&particle_data, n_particles, tetra_data, n_tetra, p_mass);
@@ -419,7 +419,7 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
 
   //*******************************************************************************
   // find the forward hull facets of the 3D Delaunay triangulation convex hull
-  // a forward facet is one who's outward surface normal dotted with the z unit 
+  // a forward facet is one who's outward surface normal dotted with the z unit
   // vector is positive
   // the bitmap has value 1 for a tetrahedron with forward hull face
   // here 4 is the number of tetrahedron faces
@@ -429,7 +429,7 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
   // tri row ( A, B, C, N1, N2, N3 )
   int *tri_data = copy_fh_triangles(tetra_data, n_tetra, particle_data, n_particles, num_forward_faces, bitmap);
 
-  // delete the bitmap 
+  // delete the bitmap
   free(bitmap);
 
   //*******************************************************************************
@@ -441,7 +441,7 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
   double offset_y = -(box_len/2.0) + center_y;
   double offset_z = -(box_len_z/2.0) + center_z;
 
-  // if the MC sample area is bigger than the pixel, keep it, otherwise use the pixel area  
+  // if the MC sample area is bigger than the pixel, keep it, otherwise use the pixel area
   const double sample_scale  = delta_sample > delta_xy ? delta_sample : delta_xy;
   // adjust the offset for MC sampling
   const double sample_offset = delta_sample > delta_xy ? (delta_sample-delta_xy)/2.0 : 0.0;
@@ -454,7 +454,7 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
   default( none ) \
   shared( tri_data, tetra_data, particle_data, rho, offset_z, box_len_z, delta_xy, grid_dim, \
   num_threads, i, offset_x, offset_y, my_thread_id, nabla, tetra_crossed, tetra_crossed_srt ) \
-  private(sub_dim, num_sub_elem ) 
+  private(sub_dim, num_sub_elem )
 {
   num_threads = omp_get_num_threads();    // for OPENMP update the number of threads
   my_thread_id = omp_get_thread_num();
@@ -463,7 +463,7 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
   int num_sub_elem = sub_dim * sub_dim;
   int i;
 #if defined(_OPENMP)
-  #pragma omp for schedule( dynamic, 1 ) 
+  #pragma omp for schedule( dynamic, 1 )
 #endif
   for (i=0;i<grid_dim*grid_dim;i+=num_sub_elem) {
     int index = i - ( ( i % ( grid_dim * sub_dim ) ) / num_sub_elem ) * ( num_sub_elem - sub_dim );
@@ -483,7 +483,7 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
           double y_t=y+((double)rand()/RAND_MAX)*sample_scale;
           int ft=0;
           int start_tri=0;
-          ft=pt_loc_2d(tri_data, particle_data, &start_tri, x_t, y_t); 
+          ft=pt_loc_2d(tri_data, particle_data, &start_tri, x_t, y_t);
           if (ft==-1) {
             rho_tmp[r]=0.0;
             --n_avg;
