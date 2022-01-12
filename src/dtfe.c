@@ -373,6 +373,137 @@ double shoot_3d_ray( int th_idx, int *tetra_data, double *nabla, double *particl
   return rho;
 }
 
+void evaluate_3d_ray_on_grid( int th_idx, int *tetra_data, double *nabla, double *particle_data, double x, double y,
+    double offset_z, double box_len_z, int nz, double delta_xy, int *tetra_crossed, double* rho_vector){
+  double z;
+  double *vert[4];
+  double P_enter[3];
+  double P_leave[3];
+  int enterFace;
+  int leaveFace;
+  int is_intersection;
+  int is_special_case;
+  int perturb_counter;
+  double orig[3];
+  double dest[3];
+  int tmp;
+  int i;
+  double dir[3];
+  double plRay[ 6 ];
+  plRay[0] = 0.0f;
+  plRay[1] = 0.0f;
+  plRay[5] = 0.0f;
+  int dummy[8];
+  int *tetrahedron;
+  int last_th_idx;
+
+  double dz = box_len_z / nz;
+  const double max_dist = delta_xy / 2.0;
+  const double dist = max_dist / PERTURB_MAX;
+
+  (*tetra_crossed)=0;
+
+  if ( th_idx != -1 ) {
+
+    assert( th_idx >= -1 );
+
+    orig[ 0 ] = x;
+    orig[ 1 ] = y;
+    orig[ 2 ] = offset_z;
+
+    dest[ 0 ] = x;
+    dest[ 1 ] = y;
+    dest[ 2 ] = offset_z + box_len_z;
+
+    leaveFace = 0;
+    dummy[ 4 + leaveFace ] = th_idx;
+    tetrahedron = dummy;
+    last_th_idx = -1;
+
+    // dir, dest - orig
+    plRay[ 2 ] = box_len_z;
+    // cross, dir x orig
+    plRay[ 3 ] = -box_len_z * orig[ 1 ];
+    plRay[ 4 ] =  box_len_z * orig[ 0 ];
+
+    while( tetrahedron[ 4 + leaveFace ] != -1 ) {
+      // detect a turn around, and, turn around
+      if ( tetrahedron[ 4 + leaveFace ] == last_th_idx ) {
+        tmp = enterFace;
+        enterFace = leaveFace;
+        leaveFace = tmp;
+        if ( tetrahedron[ 4 + leaveFace ] == -1 )
+          break;
+      }
+
+      last_th_idx = th_idx;
+      th_idx = tetrahedron[ 4 + leaveFace ];
+      assert( th_idx >= -1 );
+      tetrahedron = &tetra_data[th_idx*8];
+
+      vert[0] = &particle_data[tetrahedron[A]*4];
+      vert[1] = &particle_data[tetrahedron[B]*4];
+      vert[2] = &particle_data[tetrahedron[C]*4];
+      vert[3] = &particle_data[tetrahedron[D]*4];
+
+      if ( !rayTetraPlucker_full( plRay, vert, &enterFace, &leaveFace, P_enter, P_leave, &is_special_case ) ) {
+        fprintf( stderr, "Warning: rayTetraPlucker_full no intersection -- returned density 0.0 at location [ %f, %f ]\n", x, y );
+        (*tetra_crossed)=0;
+        return;
+      }
+
+      assert( enterFace != leaveFace );
+
+      perturb_counter = 0;
+      while( is_special_case ) {
+        // x and y coords of orig and dest are modified
+        perturb_ray( orig, dest, vert, dist );
+
+        plRay[ 3 ] = -box_len_z * orig[ 1 ];
+        plRay[ 4 ] =  box_len_z * orig[ 0 ];
+        plRay[ 5 ] = 0.0f;
+
+        if ( ++perturb_counter > PERTURB_MAX ) {
+          fprintf( stderr, "Warning: rayTetraPlucker_full perturb_counter max -- returned density 0.0 at location [ %f, %f ]\n", x, y );
+          (*tetra_crossed)=0;
+          return;
+        }
+
+        if ( !rayTetraPlucker_full( plRay, vert, &enterFace, &leaveFace, P_enter, P_leave, &is_special_case ) ) {
+          fprintf( stderr, "Warning: rayTetraPlucker_full no intersection after perturb -- returned density 0.0 at location [ %f, %f ]\n", x, y );
+          (*tetra_crossed)=0;
+          return;
+        }
+      }
+      ++(*tetra_crossed);
+
+      // interpolate the point on the ray within the tetrahedron
+      // for surface density, take the center of the ( enter, leave ) interval
+      // ******************************************************************
+      // check is the box starts (or ends) within the triangulation
+      double enter_z = P_enter[ 2 ];
+      double leave_z = P_leave[ 2 ];
+
+      // start and past-the-end index of gridpoints along z within tetrahedron
+      int enter_iz = ceil((enter_z - offset_z)/dz);
+      int leave_iz = ceil((leave_z - offset_z)/dz);
+
+      if(leave_iz > enter_iz) {
+        double tetra_rho = particle_data[ tetrahedron[ A ] * 4 + 3 ];
+        double nab_tmp = nabla[ th_idx * 3 + 2 ];
+        double fixed_part_sum = tetra_rho + \
+            ( nabla[ th_idx * 3  + 0 ] * ( orig[ 0 ] - vert[ 0 ][ 0 ] ) ) + ( nabla[ th_idx * 3 + 1 ] * ( orig[ 1 ] - vert[ 0 ][ 1 ] ) ) - ( nab_tmp * vert[ 0 ][ 2 ] );
+
+        for(int iz=enter_iz; iz < leave_iz; ++iz) {
+          // z-coordinate of grid-point
+          double z_interp = dz * iz;
+          rho_vector[iz] = fixed_part_sum + nab_tmp * z_interp;
+        }
+      }
+    }
+  }
+}
+
 int pt_loc_2d(int *tri_data, double *particle_data, int *start_tri, double q_x, double q_y) {
   double *vert[3];
   int next_tri = *start_tri;
@@ -512,4 +643,84 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
 #endif
 free(nabla);
 free(tri_data);
+}
+
+void compute_3d_density(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
+  double box_len, double *rho, float p_mass, double center_x, double center_y, double center_z) {
+
+  // precompute the on-site density values and gradients
+  pre_compute_vol(&particle_data, n_particles, tetra_data, n_tetra, p_mass);
+  double *nabla = gradients(tetra_data, n_tetra, particle_data);
+
+  //*******************************************************************************
+  // find the forward hull facets of the 3D Delaunay triangulation convex hull
+  // a forward facet is one who's outward surface normal dotted with the z unit
+  // vector is positive
+  // the bitmap has value 1 for a tetrahedron with forward hull face
+  // here 4 is the number of tetrahedron faces
+  word_t *bitmap = create_bitmap(n_tetra*4);
+  int num_forward_faces = find_forward_hull(tetra_data, n_tetra, particle_data, n_particles, bitmap);
+
+  // tri row ( A, B, C, N1, N2, N3 )
+  int *tri_data = copy_fh_triangles(tetra_data, n_tetra, particle_data, n_particles, num_forward_faces, bitmap);
+
+  // delete the bitmap
+  free(bitmap);
+
+  //*******************************************************************************
+  // the pixel width
+  double delta_xy = box_len / grid_dim;
+
+  // The coordinate offsets of the grid
+  double offset_x = -(box_len/2.0) + center_x;
+  double offset_y = -(box_len/2.0) + center_y;
+  double offset_z = -(box_len/2.0) + center_z;
+
+  // if the MC sample area is bigger than the pixel, keep it, otherwise use the pixel area
+  const double sample_scale  = delta_xy;
+  // adjust the offset for MC sampling
+  const double sample_offset =  0.0;
+
+  int num_threads = 1;
+  int my_thread_id = 1;
+
+#if defined(_OPENMP)
+  #pragma omp parallel \
+  default( none ) \
+  shared( tri_data, tetra_data, particle_data, rho, offset_z, box_len_z, delta_xy, grid_dim, \
+  num_threads, i, offset_x, offset_y, my_thread_id, nabla, tetra_crossed, tetra_crossed_srt ) \
+  private(sub_dim, num_sub_elem )
+{
+  num_threads = omp_get_num_threads();    // for OPENMP update the number of threads
+  my_thread_id = omp_get_thread_num();
+#endif
+  int sub_dim = 4; // must be poower of 2
+  int num_sub_elem = sub_dim * sub_dim;
+  int i;
+#if defined(_OPENMP)
+  #pragma omp for schedule( dynamic, 1 )
+#endif
+  for (i=0;i<grid_dim*grid_dim;i+=num_sub_elem) {
+    int index = i - ( ( i % ( grid_dim * sub_dim ) ) / num_sub_elem ) * ( num_sub_elem - sub_dim );
+    int j;
+    for (j=0;j<sub_dim;++j) {
+      int k;
+      for (k=j*grid_dim;k<j*grid_dim+sub_dim;++k) {
+        double x = ((index+k)%grid_dim)*delta_xy+offset_x-sample_offset;
+        double y = ((index+k)/grid_dim)*delta_xy+offset_y-sample_offset;
+        int ft=0, start_tri=0;
+        ft=pt_loc_2d(tri_data, particle_data, &start_tri, x, y);
+        int tmp; // the number of tetra intersected
+        evaluate_3d_ray_on_grid(
+          ft, tetra_data, nabla, particle_data,
+          x, y, offset_z, box_len, grid_dim, delta_xy,
+          &tmp, rho + i*grid_dim);
+      }
+    }
+  }
+  #if defined(_OPENMP)
+  }
+  #endif
+  free(nabla);
+  free(tri_data);
 }
