@@ -486,17 +486,19 @@ void evaluate_3d_ray_on_grid( int th_idx, int *tetra_data, double *nabla, double
 
       // start and past-the-end index of gridpoints along z within tetrahedron
       int enter_iz = ceil((enter_z - offset_z)/dz);
+      enter_iz = enter_iz < 0 ? 0 : enter_iz;
       int leave_iz = ceil((leave_z - offset_z)/dz);
+      leave_iz = leave_iz > nz ? nz : leave_iz;
 
       if(leave_iz > enter_iz) {
         double tetra_rho = particle_data[ tetrahedron[ A ] * 4 + 3 ];
         double nab_tmp = nabla[ th_idx * 3 + 2 ];
         double fixed_part_sum = tetra_rho + \
             ( nabla[ th_idx * 3  + 0 ] * ( orig[ 0 ] - vert[ 0 ][ 0 ] ) ) + ( nabla[ th_idx * 3 + 1 ] * ( orig[ 1 ] - vert[ 0 ][ 1 ] ) ) - ( nab_tmp * vert[ 0 ][ 2 ] );
-
+        // printf("  tetra=%10i z_in=%10.4e z_out=%10.4e iz_in=%3i iz_out=%3i\n", *tetra_crossed, enter_z, leave_z, enter_iz, leave_iz);
         for(int iz=enter_iz; iz < leave_iz; ++iz) {
           // z-coordinate of grid-point
-          double z_interp = dz * iz;
+          double z_interp = offset_z + dz * iz;
           rho_vector[iz] = fixed_part_sum + nab_tmp * z_interp;
         }
       }
@@ -676,11 +678,6 @@ void compute_3d_density(double *particle_data, int n_particles, int *tetra_data,
   double offset_y = -(box_len/2.0) + center_y;
   double offset_z = -(box_len/2.0) + center_z;
 
-  // if the MC sample area is bigger than the pixel, keep it, otherwise use the pixel area
-  const double sample_scale  = delta_xy;
-  // adjust the offset for MC sampling
-  const double sample_offset =  0.0;
-
   int num_threads = 1;
   int my_thread_id = 1;
 
@@ -694,28 +691,23 @@ void compute_3d_density(double *particle_data, int n_particles, int *tetra_data,
   num_threads = omp_get_num_threads();    // for OPENMP update the number of threads
   my_thread_id = omp_get_thread_num();
 #endif
-  int sub_dim = 4; // must be poower of 2
-  int num_sub_elem = sub_dim * sub_dim;
-  int i;
 #if defined(_OPENMP)
   #pragma omp for schedule( dynamic, 1 )
 #endif
-  for (i=0;i<grid_dim*grid_dim;i+=num_sub_elem) {
-    int index = i - ( ( i % ( grid_dim * sub_dim ) ) / num_sub_elem ) * ( num_sub_elem - sub_dim );
-    int j;
-    for (j=0;j<sub_dim;++j) {
-      int k;
-      for (k=j*grid_dim;k<j*grid_dim+sub_dim;++k) {
-        double x = ((index+k)%grid_dim)*delta_xy+offset_x-sample_offset;
-        double y = ((index+k)/grid_dim)*delta_xy+offset_y-sample_offset;
-        int ft=0, start_tri=0;
-        ft=pt_loc_2d(tri_data, particle_data, &start_tri, x, y);
-        int tmp; // the number of tetra intersected
-        evaluate_3d_ray_on_grid(
-          ft, tetra_data, nabla, particle_data,
-          x, y, offset_z, box_len, grid_dim, delta_xy,
-          &tmp, rho + i*grid_dim);
-      }
+
+  for(int i=0; i<grid_dim; ++i) {
+    for(int j=0; j<grid_dim; ++j) {
+      double x = i*delta_xy + offset_x;
+      double y = j*delta_xy + offset_y;
+      size_t index0 = ((i*grid_dim) + j)*grid_dim;
+      int ft=0, start_tri=0;
+      ft=pt_loc_2d(tri_data, particle_data, &start_tri, x, y);
+      int tmp; // the number of tetra intersected
+      // printf("Loop i=%3i j=%3i\n", i, j);
+      evaluate_3d_ray_on_grid(
+        ft, tetra_data, nabla, particle_data,
+        x, y, offset_z, box_len, grid_dim, delta_xy,
+        &tmp, rho + index0);
     }
   }
   #if defined(_OPENMP)
