@@ -40,7 +40,7 @@ if(NOT libtiff_POPULATED)
 endif()
 
 # OpenMP  (if found: OpenMP_FOUND)
-# find_package(OpenMP)
+find_package(OpenMP)
 
 # set sources
 set(sources

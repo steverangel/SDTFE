@@ -41,6 +41,9 @@ py::array_t<double> compute_density_py(
         throw py::value_error("not enough particles");
     }
     shuffle_buff(particle_data, n_particles, n_shuffle);
+    // adjust particle mass for subsampling
+    particle_mass /= sample_factor;
+
     if(rotation_angle) {
         rotate3d(particle_data, n_shuffle, rotation_angle->data(), center.data());
     }
@@ -68,7 +71,8 @@ py::array_t<double> compute_3d_density_py(
     unsigned grid_dim,
     float sample_factor,
     double box_length,
-    double particle_mass
+    double particle_mass,
+    unsigned supersampling
 ) {
     // convert to qhdata
     // std::cout << "Particle position dim: " << particle_pos.ndim() << std::endl;
@@ -86,6 +90,8 @@ py::array_t<double> compute_3d_density_py(
         throw py::value_error("not enough particles");
     }
     shuffle_buff(particle_data, n_particles, n_shuffle);
+    // adjust particle mass for subsampling
+    particle_mass /= sample_factor;
 
     // std::cout << "Calling QHULL with " << n_shuffle << " particles (originally " << n_particles << ")" << std::endl;
     // triangulate
@@ -94,8 +100,9 @@ py::array_t<double> compute_3d_density_py(
 
     // calculate density
     py::array_t<double> rho({grid_dim, grid_dim, grid_dim});
-    std::fill(rho.mutable_data(), rho.mutable_data() + grid_dim*grid_dim, 0.);
-    compute_3d_density(particle_data, n_shuffle, tetra_data, n_tetra, grid_dim, box_length, rho.mutable_data(), particle_mass, center[0], center[1], center[2]);
+    std::fill(rho.mutable_data(), rho.mutable_data() + grid_dim*grid_dim*grid_dim, 0.);
+    compute_3d_density(particle_data, n_shuffle, tetra_data, n_tetra, grid_dim, box_length,
+    rho.mutable_data(), particle_mass, center[0], center[1], center[2], supersampling);
 
     // cleanup
     free(tetra_data);
@@ -186,6 +193,13 @@ PYBIND11_MODULE(pydtfe, m) {
         particle_mass: float
             mass of a single particle
 
+        supersampling: int
+            number of sampled points in each volume cell. The density will be
+            averaged over a ``supersampling ** 3`` grid within the volume cell.
+            For example, if set to 1, the density will be evaluated once at the
+            center of each cell. For 2, it will be evaulated on a regular 2x2x2
+            mesh and averaged.
+
         Returns
         -------
         rho: np.ndarray
@@ -197,6 +211,7 @@ PYBIND11_MODULE(pydtfe, m) {
         py::arg("grid_dim"),
         py::arg("sample_factor"),
         py::arg("box_length"),
-        py::arg("particle_mass")
+        py::arg("particle_mass"),
+        py::arg("supersampling")=1u
     );
 }
