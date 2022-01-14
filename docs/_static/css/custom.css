@@ -1,0 +1,7 @@
+table.full-width {
+    width: 100%;
+}
+
+table.full-width td {
+    white-space: normal !important;
+}
