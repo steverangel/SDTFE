@@ -144,15 +144,17 @@ PYBIND11_MODULE(pydtfe, m) {
             mass of a single particle
 
         mc_box_width: float
+           width of monte-carlo sampling of rays in each surface cell
 
         mc_sample_count: int
+           number of monte-carlo samples to be drawn per cell
 
         rotation_angle: Optional[List[float]]
 
         Returns
         -------
         rho: np.ndarray
-            the surface density map, in units of ``particle_mass / box_width^2``
+            the surface density map, in units of ``mass / length^2``
             (shape: ``(grid_dim, grid_dim)``)
   )Delim",
         py::arg("particle_pos"),
@@ -203,7 +205,7 @@ PYBIND11_MODULE(pydtfe, m) {
         Returns
         -------
         rho: np.ndarray
-            the volumetric density map, in units of ``particle_mass / box_width^3``
+            the volumetric density map, in units of ``mass / length^3``
             (shape: ``(grid_dim, grid_dim, grid_dim)``)
   )Delim",
         py::arg("particle_pos"),
