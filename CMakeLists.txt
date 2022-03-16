@@ -7,9 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Sanitizer
-# set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
-# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
-# set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address")
+# set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-omit-frame-pointer -fsanitize=address -g")
+# set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fno-omit-frame-pointer -fsanitize=address -g")
+# set (CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS} -fno-omit-frame-pointer -fsanitize=address -g")
 
 # Load QHULL
 include(FetchContent)
@@ -21,6 +21,8 @@ FetchContent_Declare(
 FetchContent_GetProperties(qhull)
 if(NOT qhull_POPULATED)
     FetchContent_Populate(qhull)
+    # patch incorrect cmake_source_dir in qhull
+    execute_process(COMMAND sed -i "s@CMAKE_SOURCE_DIR@CMAKE_CURRENT_SOURCE_DIR@g" ${qhull_SOURCE_DIR}/CMakeLists.txt)
     add_subdirectory(${qhull_SOURCE_DIR} ${qhull_BINARY_DIR})
 endif()
 
@@ -38,7 +40,7 @@ if(NOT libtiff_POPULATED)
 endif()
 
 # OpenMP  (if found: OpenMP_FOUND)
-# find_package(OpenMP)
+find_package(OpenMP)
 
 # set sources
 set(sources
@@ -54,7 +56,7 @@ set(sources
 add_library(libdtfe STATIC ${sources})
 add_library(dtfe::libdtfe ALIAS libdtfe)
 target_include_directories(libdtfe INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/src")
-target_include_directories(libdtfe PRIVATE ${qhull_SOURCE_DIR}/src/libqhull)
+target_include_directories(libdtfe PRIVATE ${qhull_SOURCE_DIR}/src/libqhull ${qhull_SOURCE_DIR}/src/libqhull_r)
 target_link_libraries(libdtfe PRIVATE qhullstatic tiff ${M_LIBRARIES})
 if(OpenMP_FOUND)
     target_link_libraries(libdtfe PRIVATE OpenMP::OpenMP_C)
