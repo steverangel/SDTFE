@@ -111,6 +111,38 @@ py::array_t<double> compute_3d_density_py(
     return rho;
 }
 
+py::array_t<float> compute_particle_density_py(
+    py::array_t<float, py::array::f_style | py::array::forcecast> particle_pos,
+    double particle_mass
+) {
+    // convert to qhdata
+    if(particle_pos.shape(1) != 3) {
+        throw py::value_error("incorrect shape of particle position array");
+    }
+    size_t n_particles = particle_pos.shape(0);
+    double *particle_data = convert_to_qhdata(particle_pos.data(), n_particles);
+
+    // triangulate
+    size_t n_tetra;
+    int *tetra_data = triangulate(particle_data, n_particles, &n_tetra, "qhull d Qz Qt Qbb");
+
+    // calculate density at particle location
+    pre_compute_vol(&particle_data, n_particles, tetra_data, n_tetra, particle_mass);
+
+    // particle_data is an array of size [n_particles, 4]
+    // the 4th column should contain the densities
+    py::array_t<float> rho(n_particles);
+    for(size_t i=0; i<n_particles; ++i) {
+        rho.mutable_data()[i] = particle_data[4*i + 3];
+    }
+
+    // cleanup
+    free(tetra_data);
+    free(particle_data);
+
+    return rho;
+}
+
 PYBIND11_MODULE(pydtfe, m) {
     m.doc() = "python interface to SDTFE";
     m.def("compute_surface_density", &compute_density_py, R"Delim(
@@ -215,5 +247,27 @@ rho: np.ndarray
         py::arg("box_length"),
         py::arg("particle_mass"),
         py::arg("supersampling")=1u
+    );
+
+    m.def("compute_particle_density", &compute_particle_density_py, R"Delim(
+computes the DTFE density at the particle locations
+
+Parameters
+----------
+particle_pos: np.ndarray
+    3d positions of the particles (shape ``(N, 3)``)
+
+particle_mass: float
+    mass of a single particle
+
+Returns
+-------
+rho: np.ndarray
+    the density at the particle locations, in units of ``mass / length^3``
+    (shape: ``(grid_dim, grid_dim, grid_dim)``)
+
+)Delim",
+        py::arg("particle_pos"),
+        py::arg("particle_mass")
     );
 }
