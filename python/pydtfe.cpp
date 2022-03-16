@@ -264,7 +264,7 @@ Returns
 -------
 rho: np.ndarray
     the density at the particle locations, in units of ``mass / length^3``
-    (shape: ``(grid_dim, grid_dim, grid_dim)``)
+    (shape: ``(n_particles)``)
 
 )Delim",
         py::arg("particle_pos"),
