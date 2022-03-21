@@ -10,3 +10,5 @@ References
 .. autofunction:: compute_3d_density
 
 .. autofunction:: compute_particle_density
+
+.. autofunction:: interpolate_field2grid

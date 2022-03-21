@@ -111,6 +111,57 @@ py::array_t<double> compute_3d_density_py(
     return rho;
 }
 
+py::array_t<double> interpolate_field2grid(
+    py::array_t<float, py::array::f_style | py::array::forcecast> particle_pos,
+    py::array_t<float> particle_value,
+    std::array<double, 3> center,
+    unsigned grid_dim,
+    float sample_factor,
+    double box_length,
+    unsigned supersampling
+) {
+    // convert to qhdata
+    // std::cout << "Particle position dim: " << particle_pos.ndim() << std::endl;
+    // std::cout << "Particle position shape: " << particle_pos.shape(0) << ", " << particle_pos.shape(1) << std::endl;
+    // std::cout << "Particle position flags: " << particle_pos.flags() << std::endl;
+    if(particle_pos.shape(1) != 3) {
+        throw py::value_error("incorrect shape of particle position array");
+    }
+    size_t n_particles = particle_pos.shape(0);
+    if(n_particles != particle_value.shape(0)) {
+        throw py::value_error("different length of particle position and value arrays");
+    }
+
+    double *particle_data = convert_to_qhdata(particle_pos.data(), n_particles);
+    for(size_t i=0; i<n_particles; ++i) {
+        particle_data[i*4 + 3] = particle_value.data()[i];
+    }
+
+    // shuffle and rotate
+    size_t n_shuffle = n_particles*sample_factor;
+    if(n_shuffle < 5) {
+        throw py::value_error("not enough particles");
+    }
+    shuffle_buff(particle_data, n_particles, n_shuffle);
+
+    // std::cout << "Calling QHULL with " << n_shuffle << " particles (originally " << n_particles << ")" << std::endl;
+    // triangulate
+    size_t n_tetra;
+    int *tetra_data = triangulate(particle_data, n_shuffle, &n_tetra, "qhull d Qz Qt Qbb");
+
+    // calculate density
+    py::array_t<double> grid({grid_dim, grid_dim, grid_dim});
+    std::fill(grid.mutable_data(), grid.mutable_data() + grid_dim*grid_dim*grid_dim, 0.);
+    interpolate_to_3d_grid(particle_data, n_shuffle, tetra_data, n_tetra, grid_dim, box_length,
+    grid.mutable_data(), center[0], center[1], center[2], supersampling);
+
+    // cleanup
+    free(tetra_data);
+    free(particle_data);
+
+    return grid;
+}
+
 py::array_t<float> compute_particle_density_py(
     py::array_t<float, py::array::f_style | py::array::forcecast> particle_pos,
     double particle_mass
@@ -246,6 +297,53 @@ rho: np.ndarray
         py::arg("sample_factor"),
         py::arg("box_length"),
         py::arg("particle_mass"),
+        py::arg("supersampling")=1u
+    );
+
+    m.def("interpolate_field2grid", &interpolate_field2grid, R"Delim(
+interplates a scalar field from particle locations to a grid using the DTFE
+
+Parameters
+----------
+particle_pos: np.ndarray
+    3d positions of the particles (shape ``(N, 3)``)
+
+particle_value: np.ndarray
+    value of the scalar field at the particle position (shape ``(N,)``)
+
+center: List[float]
+    position of the halo center (length 3)
+
+grid_dim: int
+    resolution of the density map (will be a cube)
+
+sample_factor: float
+    subsampling factor between [0, 1]. If smaller than 1.0, the code will only
+    use a random subset of the particles, corresponding to the fraction
+    specified
+
+box_depth: float
+    physical size of the density cube
+
+supersampling: int
+    number of sampled points in each volume cell. The density will be averaged
+    over a ``supersampling ** 3`` grid within the volume cell. For example, if
+    set to 1, the density will be evaluated once at the center of each cell.
+    For 2, it will be evaulated on a regular 2x2x2 mesh and averaged.
+
+Returns
+-------
+rho: np.ndarray
+    the volumetric density map, in units of ``mass / length^3``
+    (shape: ``(grid_dim, grid_dim, grid_dim)``)
+
+)Delim",
+        py::arg("particle_pos"),
+        py::arg("particle_value"),
+        py::arg("center"),
+        py::arg("grid_dim"),
+        py::arg("sample_factor"),
+        py::arg("box_length"),
         py::arg("supersampling")=1u
     );
 
