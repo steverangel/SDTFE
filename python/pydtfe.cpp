@@ -333,8 +333,8 @@ supersampling: int
 
 Returns
 -------
-rho: np.ndarray
-    the volumetric density map, in units of ``mass / length^3``
+grid: np.ndarray
+    the scalar field interpolated to the grid points
     (shape: ``(grid_dim, grid_dim, grid_dim)``)
 
 )Delim",
