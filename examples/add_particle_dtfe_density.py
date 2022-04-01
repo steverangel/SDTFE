@@ -10,6 +10,12 @@ Requirements
 * mpipartition: https://github.com/ArgonneCPAC/MPIPartition
 * numpy
 
+i.e.
+```
+pip install numpy mpipartition
+pip install git+https://git.cels.anl.gov/hacc/genericio.git
+```
+
 Usage
 -----
 
