@@ -138,7 +138,7 @@ py::array_t<double> interpolate_field2grid(
     // TODO: if we want to enable this functionality, we need to make sure we shuffle the
     // particle_value array accordingly
     if(sample_factor >= 1.f) {
-        throw py::value_error("sample factor < 1.f not supported at the moment")
+        throw py::value_error("sample factor < 1.f not supported at the moment");
     }
     /*
     size_t n_shuffle = n_particles*sample_factor;
