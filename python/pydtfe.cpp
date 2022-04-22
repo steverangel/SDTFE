@@ -133,21 +133,28 @@ py::array_t<double> interpolate_field2grid(
     }
 
     double *particle_data = convert_to_qhdata(particle_pos.data(), n_particles);
-    for(size_t i=0; i<n_particles; ++i) {
-        particle_data[i*4 + 3] = particle_value.data()[i];
-    }
 
     // shuffle and rotate
+    // TODO: if we want to enable this functionality, we need to make sure we shuffle the
+    // particle_value array accordingly
+    if(sample_factor >= 1.f) {
+        throw py::value_error("sample factor < 1.f not supported at the moment")
+    }
+    /*
     size_t n_shuffle = n_particles*sample_factor;
     if(n_shuffle < 5) {
         throw py::value_error("not enough particles");
     }
     shuffle_buff(particle_data, n_particles, n_shuffle);
+    */
 
     // std::cout << "Calling QHULL with " << n_shuffle << " particles (originally " << n_particles << ")" << std::endl;
     // triangulate
     size_t n_tetra;
     int *tetra_data = triangulate(particle_data, n_shuffle, &n_tetra, "qhull d Qz Qt Qbb");
+    for(size_t i=0; i<n_particles; ++i) {
+        particle_data[i*4 + 3] = particle_value.data()[i];
+    }
 
     // calculate density
     py::array_t<double> grid({grid_dim, grid_dim, grid_dim});
