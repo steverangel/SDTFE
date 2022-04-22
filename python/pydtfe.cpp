@@ -137,8 +137,8 @@ py::array_t<double> interpolate_field2grid(
     // shuffle and rotate
     // TODO: if we want to enable this functionality, we need to make sure we shuffle the
     // particle_value array accordingly
-    if(sample_factor >= 1.f) {
-        throw py::value_error("sample factor < 1.f not supported at the moment");
+    if(sample_factor != 1.0f) {
+        throw py::value_error("`sample_factor != 1.0f` not supported at the moment");
     }
     /*
     size_t n_shuffle = n_particles*sample_factor;
@@ -344,6 +344,12 @@ Returns
 grid: np.ndarray
     the scalar field interpolated to the grid points
     (shape: ``(grid_dim, grid_dim, grid_dim)``)
+
+
+Note
+----
+currently, only `sampling_factor=1.0` is allowed. Adding support for subsampling
+requires some changes to the code.
 
 )Delim",
         py::arg("particle_pos"),
