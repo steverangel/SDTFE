@@ -147,6 +147,7 @@ py::array_t<double> interpolate_field2grid(
     }
     shuffle_buff(particle_data, n_particles, n_shuffle);
     */
+    size_t n_shuffle = n_particles;
 
     // std::cout << "Calling QHULL with " << n_shuffle << " particles (originally " << n_particles << ")" << std::endl;
     // triangulate
