@@ -653,13 +653,21 @@ free(nabla);
 free(tri_data);
 }
 
+
+
 void compute_3d_density(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
   double box_len, double *rho, float p_mass, double center_x, double center_y, double center_z, unsigned supersampling) {
 
-  assert(supersampling > 0);
-
   // precompute the on-site density values and gradients
   pre_compute_vol(&particle_data, n_particles, tetra_data, n_tetra, p_mass);
+  interpolate_to_3d_grid(particle_data, n_particles, tetra_data, n_tetra, grid_dim, box_len, rho,
+  center_x, center_y, center_z, supersampling);
+}
+
+
+void interpolate_to_3d_grid(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
+  double box_len, double *grid, double center_x, double center_y, double center_z, unsigned supersampling) {
+  assert(supersampling > 0);
   double *nabla = gradients(tetra_data, n_tetra, particle_data);
 
   //*******************************************************************************
@@ -715,7 +723,7 @@ void compute_3d_density(double *particle_data, int n_particles, int *tetra_data,
           evaluate_3d_ray_on_grid(
             ft, tetra_data, nabla, particle_data,
             x, y, offset_z, box_len, grid_dim, delta_xy,
-            &tmp, supersampling, rho + index0);
+            &tmp, supersampling, grid + index0);
         }
     }
   }

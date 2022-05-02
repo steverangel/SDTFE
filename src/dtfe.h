@@ -14,6 +14,9 @@ void compute_density(double *particle_data, int n_particles, int *tetra_data, in
   double box_len, double box_len_z, double *rho, float p_mass, double center_x, double center_y, double center_z, \
   const int n_mc_samp, const double delta_sample);
 
+void interpolate_to_3d_grid(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
+  double box_len, double *grid, double center_x, double center_y, double center_z, unsigned supersampling);
+
 void compute_3d_density(double *particle_data, int n_particles, int *tetra_data, int n_tetra, int grid_dim, \
   double box_len, double *rho, float p_mass, double center_x, double center_y, double center_z, unsigned supersampling);
 #endif
