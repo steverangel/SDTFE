@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDTFE Python Library &mdash; SDTFE  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex/" />
+    <link rel="search" title="Search" href="../search/" />
+    <link rel="next" title="Executables" href="../executables/" />
+    <link rel="prev" title="SDTFE Documentation" href="../" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../" class="icon icon-home"> SDTFE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../">SDTFE Documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SDTFE Python Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../executables/">Executables</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../">SDTFE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../" class="icon icon-home"></a> &raquo;</li>
+      <li>SDTFE Python Library</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/python.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sdtfe-python-library">
+<h1>SDTFE Python Library<a class="headerlink" href="#sdtfe-python-library" title="Permalink to this headline"></a></h1>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pydtfe.compute_surface_density">
+<span class="sig-name descname"><span class="pre">compute_surface_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_box_width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mc_sample_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotation_angle</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pydtfe.compute_surface_density" title="Permalink to this definition"></a></dt>
+<dd><p>computes the surface density using the DTFE tesselation of a particle
+distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle_pos</strong> (<em>np.ndarray</em>) – 3d positions of the particles (shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code>)</p></li>
+<li><p><strong>center</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – position of the halo center (length 3)</p></li>
+<li><p><strong>grid_dim</strong> (<em>int</em>) – resolution of the surface density map (will be square)</p></li>
+<li><p><strong>sample_factor</strong> (<em>float</em>) – subsampling factor between [0, 1]. If smaller than 1.0, the code will only
+use a random subset of the particles, corresponding to the fraction
+specified</p></li>
+<li><p><strong>box_width</strong> (<em>float</em>) – physical size of the width (and height) of the map</p></li>
+<li><p><strong>box_depth</strong> (<em>float</em>) – physical depth of the surface density map (density will be integrated
+between [center_z - box_depth/2, center_z + box_depth/2])</p></li>
+<li><p><strong>particle_mass</strong> (<em>float</em>) – mass of a single particle</p></li>
+<li><p><strong>mc_box_width</strong> (<em>float</em>) – width of monte-carlo sampling of rays in each surface cell</p></li>
+<li><p><strong>mc_sample_count</strong> (<em>int</em>) – number of monte-carlo samples to be drawn per cell</p></li>
+<li><p><strong>rotation_angle</strong> (<em>Optional</em><em>[</em><em>List</em><em>[</em><em>float</em><em>]</em><em>]</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rho</strong> – the surface density map, in units of <code class="docutils literal notranslate"><span class="pre">mass</span> <span class="pre">/</span> <span class="pre">length^2</span></code>
+(shape: <code class="docutils literal notranslate"><span class="pre">(grid_dim,</span> <span class="pre">grid_dim)</span></code>)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydtfe.compute_3d_density">
+<span class="sig-name descname"><span class="pre">compute_3d_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pydtfe.compute_3d_density" title="Permalink to this definition"></a></dt>
+<dd><p>computes the volumetric density using the DTFE tesselation of a particle
+distribution</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle_pos</strong> (<em>np.ndarray</em>) – 3d positions of the particles (shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code>)</p></li>
+<li><p><strong>center</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – position of the halo center (length 3)</p></li>
+<li><p><strong>grid_dim</strong> (<em>int</em>) – resolution of the density map (will be a cube)</p></li>
+<li><p><strong>sample_factor</strong> (<em>float</em>) – subsampling factor between [0, 1]. If smaller than 1.0, the code will only
+use a random subset of the particles, corresponding to the fraction
+specified</p></li>
+<li><p><strong>box_depth</strong> (<em>float</em>) – physical size of the density cube</p></li>
+<li><p><strong>particle_mass</strong> (<em>float</em>) – mass of a single particle</p></li>
+<li><p><strong>supersampling</strong> (<em>int</em>) – number of sampled points in each volume cell. The density will be averaged
+over a <code class="docutils literal notranslate"><span class="pre">supersampling</span> <span class="pre">**</span> <span class="pre">3</span></code> grid within the volume cell. For example, if
+set to 1, the density will be evaluated once at the center of each cell.
+For 2, it will be evaulated on a regular 2x2x2 mesh and averaged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rho</strong> – the volumetric density map, in units of <code class="docutils literal notranslate"><span class="pre">mass</span> <span class="pre">/</span> <span class="pre">length^3</span></code>
+(shape: <code class="docutils literal notranslate"><span class="pre">(grid_dim,</span> <span class="pre">grid_dim,</span> <span class="pre">grid_dim)</span></code>)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydtfe.compute_particle_density">
+<span class="sig-name descname"><span class="pre">compute_particle_density</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_mass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pydtfe.compute_particle_density" title="Permalink to this definition"></a></dt>
+<dd><p>computes the DTFE density at the particle locations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle_pos</strong> (<em>np.ndarray</em>) – 3d positions of the particles (shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code>)</p></li>
+<li><p><strong>particle_mass</strong> (<em>float</em>) – mass of a single particle</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rho</strong> – the density at the particle locations, in units of <code class="docutils literal notranslate"><span class="pre">mass</span> <span class="pre">/</span> <span class="pre">length^3</span></code>
+(shape: <code class="docutils literal notranslate"><span class="pre">(n_particles)</span></code>)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pydtfe.interpolate_field2grid">
+<span class="sig-name descname"><span class="pre">interpolate_field2grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">particle_pos</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">particle_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float32</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_dim</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_factor</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">box_length</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">supersampling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.float64</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pydtfe.interpolate_field2grid" title="Permalink to this definition"></a></dt>
+<dd><p>interplates a scalar field from particle locations to a grid using the DTFE</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>particle_pos</strong> (<em>np.ndarray</em>) – 3d positions of the particles (shape <code class="docutils literal notranslate"><span class="pre">(N,</span> <span class="pre">3)</span></code>)</p></li>
+<li><p><strong>particle_value</strong> (<em>np.ndarray</em>) – value of the scalar field at the particle position (shape <code class="docutils literal notranslate"><span class="pre">(N,)</span></code>)</p></li>
+<li><p><strong>center</strong> (<em>List</em><em>[</em><em>float</em><em>]</em>) – position of the halo center (length 3)</p></li>
+<li><p><strong>grid_dim</strong> (<em>int</em>) – resolution of the density map (will be a cube)</p></li>
+<li><p><strong>sample_factor</strong> (<em>float</em>) – subsampling factor between [0, 1]. If smaller than 1.0, the code will only
+use a random subset of the particles, corresponding to the fraction
+specified</p></li>
+<li><p><strong>box_depth</strong> (<em>float</em>) – physical size of the density cube</p></li>
+<li><p><strong>supersampling</strong> (<em>int</em>) – number of sampled points in each volume cell. The density will be averaged
+over a <code class="docutils literal notranslate"><span class="pre">supersampling</span> <span class="pre">**</span> <span class="pre">3</span></code> grid within the volume cell. For example, if
+set to 1, the density will be evaluated once at the center of each cell.
+For 2, it will be evaulated on a regular 2x2x2 mesh and averaged.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>grid</strong> – the scalar field interpolated to the grid points
+(shape: <code class="docutils literal notranslate"><span class="pre">(grid_dim,</span> <span class="pre">grid_dim,</span> <span class="pre">grid_dim)</span></code>)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>currently, only <cite>sampling_factor=1.0</cite> is allowed. Adding support for subsampling
+requires some changes to the code.</p>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Steve Rangel, et al..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
