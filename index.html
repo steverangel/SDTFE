@@ -1,0 +1,198 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SDTFE Documentation &mdash; SDTFE  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=26d47c55" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=187304be"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex/" />
+    <link rel="search" title="Search" href="search/" />
+    <link rel="next" title="SDTFE Python Library" href="python/" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            SDTFE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search/" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SDTFE Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python/">SDTFE Python Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="executables/">Executables</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">SDTFE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">SDTFE Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="sdtfe">
+<h1>SDTFE<a class="headerlink" href="#sdtfe" title="Link to this heading"></a></h1>
+<p>This code implements the method for computing a surface density field from particle data, as described in the paper: Parallel DTFE Surface Density Field Reconstruction, see author section for details. It was developed for computing gravitational lensing effects using the flat-sky approximation from N-body cosmological simulations.</p>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>These instructions will get a copy of the project up and running on your local machine for development and testing purposes. Tested on macOSX 10.13.3 High Sierra.</p>
+<p>Download SDTFE</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:steverangel/SDTFE.git
+</pre></div>
+</div>
+<section id="building-using-c-make">
+<h3>Building Using C-Make<a class="headerlink" href="#building-using-c-make" title="Link to this heading"></a></h3>
+<p>CMake will automatically download the Qhull and libtiff dependencies.</p>
+<p>Prerequisites:</p>
+<ul class="simple">
+<li><p>CMake v3.11 or later</p></li>
+<li><p>compiler supporting C++14 (for the python extension)</p></li>
+</ul>
+<p><strong>Python library</strong></p>
+<p>The python library can be installed with <code class="docutils literal notranslate"><span class="pre">pip</span></code> from within the SDTFE folder.
+The <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script will internally call CMake to compile the DTFE library</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>SDTFE
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p><strong>Executables</strong></p>
+<p>To build the executables, create a build directory and run <code class="docutils literal notranslate"><span class="pre">cmake</span></code></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>SDTFE
+mkdir<span class="w"> </span>build<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>build
+cmake<span class="w"> </span>..
+make<span class="w"> </span>-j4
+</pre></div>
+</div>
+</section>
+<section id="building-using-make">
+<h3>Building Using Make<a class="headerlink" href="#building-using-make" title="Link to this heading"></a></h3>
+<p>Prerequisites:</p>
+<ul class="simple">
+<li><p>This software uses <a class="reference external" href="http://www.qhull.org">Qhull</a> for the Delaunay triangulation library.</p></li>
+<li><p>Optional, but recomended, is <a class="reference external" href="http://www.libtiff.org">libtiff</a> for visualization of the resulting field.</p></li>
+</ul>
+<p>Download and install Qhull.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:qhull/qhull.git
+<span class="nb">cd</span><span class="w"> </span>qhull
+make
+</pre></div>
+</div>
+<p>Download and install libtiff.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-O<span class="w"> </span>http://download.osgeo.org/libtiff/tiff-4.0.9.tar.gz
+tar<span class="w"> </span>xvfz<span class="w"> </span>tiff-4.0.9.tar.gz
+<span class="nb">cd</span><span class="w"> </span>tiff-4.0.9/
+mkdir<span class="w"> </span>install
+./configure<span class="w"> </span>--prefix<span class="o">=</span>/your/local/install
+make
+make<span class="w"> </span>install
+</pre></div>
+</div>
+<p>Edit the SDTFE Makefile to link Qhull and libtiff.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">SDTFE</span>
+<span class="n">vim</span> <span class="n">Makefile</span>
+<span class="o">...</span>
+<span class="n">QHULLLIBDIR</span> <span class="o">=</span> <span class="o">../</span><span class="n">qhull</span><span class="o">/</span><span class="n">lib</span>
+<span class="n">QHULLINCDIR</span> <span class="o">=</span> <span class="o">-</span><span class="n">I</span><span class="o">../</span><span class="n">qhull</span><span class="o">/</span><span class="n">src</span><span class="o">/</span><span class="n">libqhull</span>
+
+<span class="n">TIFFLIBDIR</span> <span class="o">=</span> <span class="o">../</span><span class="n">tiff</span><span class="o">-</span><span class="mf">4.0.9</span><span class="o">/</span><span class="n">install</span><span class="o">/</span><span class="n">lib</span>
+<span class="n">TIFFINCDIR</span> <span class="o">=</span> <span class="o">-</span><span class="n">I</span><span class="o">../</span><span class="n">tiff</span><span class="o">-</span><span class="mf">4.0.9</span><span class="o">/</span><span class="n">libtiff</span>
+<span class="o">...</span>
+</pre></div>
+</div>
+<p>Compile SDTFE using make.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Esteban Rangel</strong> - <em>Parallel DTFE Surface Density Field Reconstruction</em> - <a class="reference external" href="http://cucis.ece.northwestern.edu/publications/pdf/RLH16.pdf">pdf</a></p></li>
+</ul>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Link to this heading"></a></h2>
+<p>This project is licensed under the GNU License - see the <a class="reference external" href="https://github.com/steverangel/SDTFE/blob/master/LICENSE">LICENSE</a> file for details.</p>
+</section>
+<section id="acknowledgments">
+<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The Delaunay Tessellation Field Estimator - <a class="reference external" href="https://arxiv.org/pdf/astro-ph/0011007.pdf">pdf</a></p></li>
+<li><p>Fast Ray–Tetrahedron Intersection using Plücker Coordinates - <a class="reference external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.565.3129&amp;amp;rep=rep1&amp;amp;type=pdf">pdf</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Steve Rangel, et al..</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
