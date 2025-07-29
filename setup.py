@@ -1,14 +1,14 @@
 import os
-import re
-import sys
-import subprocess
 import platform
+import re
+import subprocess
+import sys
+
+from packaging import version
 
 # import versioneer
-
-from setuptools import setup, Extension
+from setuptools import Extension, setup
 from setuptools.command.build_ext import build_ext
-from distutils.version import LooseVersion
 
 
 class CMakeExtension(Extension):
@@ -26,10 +26,10 @@ class CMakeBuild(build_ext):
                 "CMake must be installed to build the following extensions: "
                 + ", ".join(e.name for e in self.extensions)
             )
-        cmake_version = LooseVersion(
+        cmake_version = version.parse(
             re.search(r"version\s*([\d.]+)", out.decode()).group(1)
         )
-        if cmake_version < "3.11.0":
+        if cmake_version < version.parse("3.11.0"):
             raise RuntimeError("CMake >= 3.11.0 is required")
         for ext in self.extensions:
             self.build_extension(ext)
@@ -39,6 +39,7 @@ class CMakeBuild(build_ext):
         cmake_args = [
             "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
             "-DPYTHON_EXECUTABLE=" + sys.executable,
+            "-DCMAKE_POLICY_VERSION_MINIMUM=3.11",
         ]
         cfg = "Debug" if self.debug else "Release"
         build_args = ["--config", cfg, "--target", "pydtfe"]
@@ -47,7 +48,7 @@ class CMakeBuild(build_ext):
             cmake_args += [
                 "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(cfg.upper(), extdir)
             ]
-            if sys.maxsize > 2 ** 32:
+            if sys.maxsize > 2**32:
                 cmake_args += ["-A", "x64"]
             build_args += ["--", "/m"]
         else:

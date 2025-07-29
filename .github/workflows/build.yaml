@@ -1,0 +1,37 @@
+name: build
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-library:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Build Project
+        uses: threeal/cmake-action@v2.1.0
+  build-python:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: setup python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build Project
+        run: |
+          python -m pip install .
+      - name: Test import
+        run: |
+          cd ~
+          python -c "import pydtfe"

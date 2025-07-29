@@ -16,14 +16,13 @@ include(FetchContent)
 FetchContent_Declare(
     qhull
     GIT_REPOSITORY https://github.com/qhull/qhull.git
-    GIT_TAG 2015.2
+    GIT_TAG v8.0.2
 )
 FetchContent_GetProperties(qhull)
 if(NOT qhull_POPULATED)
-    FetchContent_Populate(qhull)
+    FetchContent_MakeAvailable(qhull)
     # patch incorrect cmake_source_dir in qhull
     execute_process(COMMAND sed -i "s@CMAKE_SOURCE_DIR@CMAKE_CURRENT_SOURCE_DIR@g" ${qhull_SOURCE_DIR}/CMakeLists.txt)
-    add_subdirectory(${qhull_SOURCE_DIR} ${qhull_BINARY_DIR})
 endif()
 
 # load tiff
@@ -31,12 +30,11 @@ include(FetchContent)
 FetchContent_Declare(
     libtiff
     GIT_REPOSITORY https://gitlab.com/libtiff/libtiff.git
-    GIT_TAG v4.3.0
+    GIT_TAG v4.7.0
 )
 FetchContent_GetProperties(libtiff)
 if(NOT libtiff_POPULATED)
-    FetchContent_Populate(libtiff)
-    add_subdirectory(${libtiff_SOURCE_DIR} ${libtiff_BINARY_DIR})
+    FetchContent_MakeAvailable(libtiff)
 endif()
 
 # OpenMP  (if found: OpenMP_FOUND)
